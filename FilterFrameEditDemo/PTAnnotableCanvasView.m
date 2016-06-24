@@ -15,14 +15,14 @@
 @interface PTAnnotableCanvasView (){
     CGPoint startPoint;
     CGPoint endPoint;
-    Arrow *arrow;
+    
     Arrow *selectedArrow;
     NSInteger arrowTag;
     BOOL drawing;
 }
 
 @property (nonatomic, strong) NSMutableArray *arrowGroup;
-
+//@property (nonatomic, strong) Arrow *activeArrow;
 
 @end
 
@@ -34,8 +34,8 @@
         self.backgroundColor = [UIColor clearColor];
         self.layer.borderColor = [UIColor redColor].CGColor;
         self.layer.borderWidth = 2;
-        arrow = [[Arrow alloc] initWithFrame:CGRectZero];
-        [self addSubview:arrow];
+        //        _activeArrow = [[Arrow alloc] initWithFrame:CGRectZero];
+        //        [self addSubview:_activeArrow];
     }
     return self;
 }
@@ -44,21 +44,22 @@
     
     UITouch* touchPoint = [touches anyObject];
     
+    // Check if user is tapping on existing arrow on the canvas
     for(Arrow * currentArrow in self.arrowGroup){
         if (touchPoint.view == currentArrow) {
             NSLog(@"Arrow %ld touched",(long)currentArrow.tag);
             selectedArrow = currentArrow;
-            //            selectedArrow.selected = !selectedArrow.selected;
             selectedArrow.isEditing = NO;
-            arrow.hidden = YES;
+            //            _activeArrow.hidden = YES;
             drawing = NO;
             CGPoint localPoint = [self convertPoint:[touchPoint locationInView:self] toView:selectedArrow];
-            NSLog(@"local point %@",NSStringFromCGPoint(localPoint));
             CGFloat tailing = [self distanceBetweenPointA:localPoint andPointB:selectedArrow.endPoint];
             CGFloat leading = [self distanceBetweenPointA:localPoint andPointB:selectedArrow.startPoint];
             selectedArrow.isDraggingHead = NO;
             selectedArrow.isDraggingTail = NO;
             selectedArrow.isDraggingSelf = NO;
+            
+            //check if user is dragging its head, tail or the body itself
             if (tailing < kArrowChangeThreshold) {
                 selectedArrow.isDraggingTail = YES;
             }else if (leading < kArrowChangeThreshold) {
@@ -66,24 +67,32 @@
             }else{
                 selectedArrow.isDraggingSelf = YES;
             }
-            
             return;
+        }else{
+            selectedArrow = nil;
         }
     }
-    
+    drawing = YES;
+    Arrow * _activeArrow = [[Arrow alloc] initWithFrame:CGRectZero];
+    _activeArrow.tag = arrowTag;
+    // User is tapping on empty space, that means they are ready to draw a new arrow
     startPoint = [touchPoint locationInView:self];
     endPoint = [touchPoint locationInView:self];
-    arrow.parentStartPoint = startPoint;
-    arrow.parentEndPoint = endPoint;
-    arrow.startPoint = CGPointMake(0, 15);
-    arrow.endPoint = CGPointMake(0, 15);
-    arrow.hidden = NO;
-    [arrow updateBoundingBox];
+    _activeArrow.parentStartPoint = startPoint;
+    _activeArrow.parentEndPoint = endPoint;
+    _activeArrow.startPoint = CGPointMake(0, 15);
+    _activeArrow.endPoint = CGPointMake(0, 15);
+    _activeArrow.hidden = NO;
+    [_activeArrow updateBoundingBox];
+    [self.arrowGroup addObject:_activeArrow];
+    [self addSubview:_activeArrow];
 }
 
 -(void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     UITouch* touchPoint = [touches anyObject];
-    if (arrow.hidden) {
+    // If new arrow is not being drawn, that means user is editing selected arrow
+    
+    if (selectedArrow) {
         CGPoint touchPoint = [[touches anyObject] locationInView:self];
         CGPoint previous = [[touches anyObject] previousLocationInView:self];
         float deltaWidth = touchPoint.x - previous.x;
@@ -101,41 +110,39 @@
             selectedArrow.parentEndPoint = CGPointMake(selectedArrow.parentEndPoint.x+deltaWidth, selectedArrow.parentEndPoint.y+deltaHeight);
         }
         
-        
-        
         selectedArrow.selected = YES;
         selectedArrow.isEditing = YES;
-        
         return;
     }
+    
+    // Otherwise, draw a new arrow
+    Arrow *_activeArrow = [self.arrowGroup lastObject];
     drawing = YES;
     endPoint = [touchPoint locationInView:self];
-    arrow.parentStartPoint = startPoint;
-    arrow.parentEndPoint = endPoint;
-    [arrow updateBoundingBox];
+    _activeArrow.parentStartPoint = startPoint;
+    _activeArrow.parentEndPoint = endPoint;
+    [_activeArrow updateBoundingBox];
     
 }
 
 -(void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    // If user finished editing current arrow, return.
     if (!drawing) {
         if (!selectedArrow.isEditing) {
             selectedArrow.selected = !selectedArrow.selected;
         }
         return;
     }
+    
+    // If the new arrow is too short, discard it.
+    Arrow *_activeArrow = [self.arrowGroup lastObject];
+    if (_activeArrow.endPoint.x < kArrowHeadLength) {
+        [_activeArrow removeFromSuperview];
+        [self.arrowGroup removeLastObject];
+        return;
+    }
+    
     drawing = NO;
-    Arrow *copyOfView = [NSKeyedUnarchiver unarchiveObjectWithData:[NSKeyedArchiver archivedDataWithRootObject:arrow]];
-    copyOfView.startPoint = arrow.startPoint;
-    copyOfView.endPoint = arrow.endPoint;
-    copyOfView.parentStartPoint = arrow.parentStartPoint;
-    copyOfView.parentEndPoint = arrow.parentEndPoint;
-    copyOfView.layer.anchorPoint = arrow.layer.anchorPoint;
-    copyOfView.tag = arrowTag;
-    copyOfView.bearingDegrees = arrow.bearingDegrees;
-    [copyOfView setNeedsDisplay];
-    [self.arrowGroup addObject:copyOfView];
-    [self addSubview:copyOfView];
-    arrow.hidden = YES;
     arrowTag++;
 }
 

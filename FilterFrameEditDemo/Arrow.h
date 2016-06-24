@@ -23,5 +23,8 @@
 @property (nonatomic, assign) BOOL isDraggingTail;
 @property (nonatomic, assign) BOOL isDraggingHead;
 @property (nonatomic, assign) BOOL isDraggingSelf;
+@property (nonatomic, strong) UIView *controlHead;
+@property (nonatomic, strong) UIView *controlTail;
+
 -(void)updateBoundingBox;
 @end

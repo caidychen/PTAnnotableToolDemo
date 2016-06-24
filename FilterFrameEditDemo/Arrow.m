@@ -29,6 +29,8 @@
     {
         [self setMultipleTouchEnabled:NO];
         [self setBackgroundColor:[UIColor clearColor]];
+        [self addSubview:self.controlHead];
+        [self addSubview:self.controlTail];
         
     }
     return self;
@@ -38,8 +40,12 @@
     
     if (!self.selected) {
         [[UIColor clearColor] setStroke];
+        self.controlTail.hidden = YES;
+        self.controlHead.hidden = YES;
     }else{
         [[[UIColor blueColor] colorWithAlphaComponent:0.6] setStroke];
+        self.controlTail.hidden = NO;
+        self.controlHead.hidden = NO;
     }
     [[UIColor redColor] setFill];
     tailWidth = kArrowTailWith;
@@ -61,42 +67,19 @@
     [self setNeedsDisplay];
 }
 
-//-(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
-//    NSLog(@"Tapped on arrow with tag %ld",(long)self.tag);
-//    self.selected = YES;
-//    [self setNeedsDisplay];
-//}
-//
-////(x + r*sin(a), y + r*cos(a))
-//
-//-(void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
-//    
-//    CGPoint touchPoint = [[touches anyObject] locationInView:self];
-//    
-//    CGPoint previous = [[touches anyObject] previousLocationInView:self];
-//    float deltaWidth = touchPoint.x - previous.x;
-//    float deltaHeight = touchPoint.y - previous.y;
-//        float radius = sqrtf(deltaWidth*deltaWidth+deltaHeight*deltaHeight);
-//        NSLog(@"radius %f",radius);
-//        CGPoint translatedPoint = CGPointMake(touchPoint.x+radius*sinf(self.bearingDegrees), touchPoint.y+radius*cosf(self.bearingDegrees));
-//        float translatedDeltaWidth = translatedPoint.x - previous.x;
-//        float translatedDeltaHeight = translatedPoint.y - previous.y;
-//        NSLog(@"delta width %f, delta height %f",translatedDeltaWidth, translatedDeltaHeight);
-//    NSLog(@"%@ %@",NSStringFromCGPoint(touchPoint),NSStringFromCGPoint(previous));
-//    self.center = CGPointMake(self.center.x+deltaWidth, self.center.y+deltaHeight);
-//        self.parentEndPoint = CGPointMake(self.parentEndPoint.x+deltaWidth, self.parentEndPoint.y+deltaHeight);
-//        [self updateBoundingBox];
-//    
-//}
 
--(void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
-    
+-(void)layoutSubviews{
+    [super layoutSubviews];
+    self.controlTail.center = self.startPoint;
+    self.controlHead.center =self.endPoint;
 }
 
 -(void)updateBoundingBox{
     CGFloat f = [self pointPairToBearingDegrees:self.parentStartPoint secondPoint:self.parentEndPoint];
     CGFloat length = [self distanceBetweenPointA:self.parentStartPoint andPointB:self.parentEndPoint];
     self.frame = CGRectMake(self.parentStartPoint.x, self.parentStartPoint.y-15, length, 30);
+    self.endPoint = CGPointMake(length, 15);
+    
     self.bearingDegrees = f;
     self.transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(f));
     self.layer.anchorPoint = CGPointMake(0, 0.5);
@@ -104,7 +87,8 @@
     bounds.size.height = 30;
     bounds.size.width = length;
     self.bounds = bounds;
-    self.endPoint = CGPointMake(length, 15);
+    
+    NSLog(@"endPoint %@ %@",NSStringFromCGPoint(self.endPoint),NSStringFromCGPoint(self.controlHead.center));
     [self setNeedsDisplay];
 }
 
@@ -122,6 +106,30 @@
     CGFloat dy = (pointB.y-pointA.y);
     CGFloat dist = sqrt(dx*dx + dy*dy);
     return dist;
+}
+
+-(UIView *)controlHead{
+    if (!_controlHead) {
+        _controlHead = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 16, 16)];
+        _controlHead.layer.cornerRadius = 8;
+        _controlHead.backgroundColor = [UIColor blueColor];
+        _controlHead.layer.borderColor = [UIColor whiteColor].CGColor;
+        _controlHead.layer.borderWidth = 4;
+        _controlHead.layer.masksToBounds = YES;
+    }
+    return _controlHead;
+}
+
+-(UIView *)controlTail{
+    if (!_controlTail) {
+        _controlTail = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 16, 16)];
+        _controlTail.layer.cornerRadius = 8;
+        _controlTail.backgroundColor = [UIColor blueColor];
+        _controlTail.layer.borderColor = [UIColor whiteColor].CGColor;
+        _controlTail.layer.borderWidth = 4;
+        _controlTail.layer.masksToBounds = YES;
+    }
+    return _controlTail;
 }
 
 @end
