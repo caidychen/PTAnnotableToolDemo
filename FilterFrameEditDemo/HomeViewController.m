@@ -29,6 +29,7 @@ typedef NS_ENUM(NSInteger, FilterType){
 @property (nonatomic, strong) UIImage *blurredImage;
 @property (nonatomic, strong) UIImage *pixellatedImage;
 @property (nonatomic, strong) NSMutableArray *maskArray;
+@property (nonatomic, strong) UIButton *deleteButton;
 @end
 
 @implementation HomeViewController
@@ -47,7 +48,8 @@ typedef NS_ENUM(NSInteger, FilterType){
     self.canvasView.center = self.view.center;
     self.blurredImage = [FilterManager IOS7BlurredEffectWithImage:self.originalImage];
     self.pixellatedImage = [FilterManager pixellateEffectWithImage:self.originalImage];
-    
+    [self.view addSubview:self.deleteButton];
+    self.deleteButton.center = CGPointMake(self.view.center.x, self.view.height-self.deleteButton.height/2);
     
     //    [self dropFilterMaskWithSourceImage:self.blurredImage];
     //    [self dropFilterMaskWithSourceImage:self.pixellatedImage];
@@ -81,6 +83,10 @@ typedef NS_ENUM(NSInteger, FilterType){
     [self.maskArray safeAddObject:maskView];
     maskView.didUpdateFrame(maskView.tag);
     filterMaskTag++;
+}
+
+-(void)toggleDeleteSelectedShape{
+    [self.annotableView deleteSelectedShape];
 }
 
 #pragma mark - Getters/Setters
@@ -134,6 +140,16 @@ typedef NS_ENUM(NSInteger, FilterType){
         _pixellatedImage = [[UIImage alloc] init];
     }
     return _pixellatedImage;
+}
+
+-(UIButton *)deleteButton{
+    if (!_deleteButton) {
+        _deleteButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 100, 50)];
+        [_deleteButton setTitle:@"Delete" forState:UIControlStateNormal];
+        [_deleteButton addTarget:self action:@selector(toggleDeleteSelectedShape) forControlEvents:UIControlEventTouchUpInside];
+        [_deleteButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    }
+    return _deleteButton;
 }
 
 @end

@@ -78,7 +78,7 @@
     CGFloat f = [self pointPairToBearingDegrees:self.parentStartPoint secondPoint:self.parentEndPoint];
     CGFloat length = [self distanceBetweenPointA:self.parentStartPoint andPointB:self.parentEndPoint];
     self.frame = CGRectMake(self.parentStartPoint.x, self.parentStartPoint.y-15, length, 30);
-    self.endPoint = CGPointMake(length, 15);
+    self.endPoint = CGPointMake(length-kArrowControlWidth, 15);
     
     self.bearingDegrees = f;
     self.transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(f));
@@ -88,7 +88,6 @@
     bounds.size.width = length;
     self.bounds = bounds;
     
-    NSLog(@"endPoint %@ %@",NSStringFromCGPoint(self.endPoint),NSStringFromCGPoint(self.controlHead.center));
     [self setNeedsDisplay];
 }
 
@@ -110,24 +109,28 @@
 
 -(UIView *)controlHead{
     if (!_controlHead) {
-        _controlHead = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 16, 16)];
+        _controlHead = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kArrowControlWidth, kArrowControlWidth)];
         _controlHead.layer.cornerRadius = 8;
         _controlHead.backgroundColor = [UIColor blueColor];
         _controlHead.layer.borderColor = [UIColor whiteColor].CGColor;
         _controlHead.layer.borderWidth = 4;
         _controlHead.layer.masksToBounds = YES;
+        _controlHead.hidden = YES;
+        _controlHead.userInteractionEnabled = NO;
     }
     return _controlHead;
 }
 
 -(UIView *)controlTail{
     if (!_controlTail) {
-        _controlTail = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 16, 16)];
+        _controlTail = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kArrowControlWidth, kArrowControlWidth)];
         _controlTail.layer.cornerRadius = 8;
         _controlTail.backgroundColor = [UIColor blueColor];
         _controlTail.layer.borderColor = [UIColor whiteColor].CGColor;
         _controlTail.layer.borderWidth = 4;
         _controlTail.layer.masksToBounds = YES;
+        _controlTail.hidden = YES;
+        _controlTail.userInteractionEnabled = NO;
     }
     return _controlTail;
 }

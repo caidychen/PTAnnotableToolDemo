@@ -10,7 +10,7 @@
 #define kArrowTailWith 4
 #define kArrowHeadWidth 12
 #define kArrowHeadLength 22
-
+#define kArrowControlWidth 16
 @interface Arrow : UIView
 
 @property (nonatomic, assign) CGPoint parentStartPoint;

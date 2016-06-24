@@ -8,7 +8,7 @@
 
 #import "PTAnnotableCanvasView.h"
 #import "Arrow.h"
-#define kArrowChangeThreshold 20
+#define kArrowChangeThreshold 32
 
 #define DEGREES_TO_RADIANS(x) (M_PI * (x) / 180.0)
 
@@ -42,6 +42,19 @@
 
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     
+    [self startDrawingArrow:touches withEvent:event];
+}
+
+-(void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    [self continueDrawingArrow:touches withEvent:event];
+}
+
+-(void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    
+    [self endDrawingArrow:touches withEvent:event];
+}
+
+-(void)startDrawingArrow:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     UITouch* touchPoint = [touches anyObject];
     
     // Check if user is tapping on existing arrow on the canvas
@@ -67,11 +80,23 @@
             }else{
                 selectedArrow.isDraggingSelf = YES;
             }
-            return;
+            
+            break;
         }else{
             selectedArrow = nil;
+            
         }
     }
+    for(Arrow * currentArrow in self.arrowGroup){
+        if (currentArrow != selectedArrow) {
+            currentArrow.selected = NO;
+        }
+    }
+    if (selectedArrow) {
+        return;
+    }
+    
+    NSLog(@"Attempting to draw new arrow...");
     drawing = YES;
     Arrow * _activeArrow = [[Arrow alloc] initWithFrame:CGRectZero];
     _activeArrow.tag = arrowTag;
@@ -80,15 +105,16 @@
     endPoint = [touchPoint locationInView:self];
     _activeArrow.parentStartPoint = startPoint;
     _activeArrow.parentEndPoint = endPoint;
-    _activeArrow.startPoint = CGPointMake(0, 15);
-    _activeArrow.endPoint = CGPointMake(0, 15);
+    _activeArrow.startPoint = CGPointMake(kArrowControlWidth/2, 15);
+    _activeArrow.endPoint = CGPointMake(kArrowControlWidth/2, 15);
     _activeArrow.hidden = NO;
     [_activeArrow updateBoundingBox];
+    
     [self.arrowGroup addObject:_activeArrow];
     [self addSubview:_activeArrow];
 }
 
--(void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+-(void)continueDrawingArrow:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     UITouch* touchPoint = [touches anyObject];
     // If new arrow is not being drawn, that means user is editing selected arrow
     
@@ -125,9 +151,10 @@
     
 }
 
--(void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+-(void)endDrawingArrow:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     // If user finished editing current arrow, return.
     if (!drawing) {
+        
         if (!selectedArrow.isEditing) {
             selectedArrow.selected = !selectedArrow.selected;
         }
@@ -139,11 +166,21 @@
     if (_activeArrow.endPoint.x < kArrowHeadLength) {
         [_activeArrow removeFromSuperview];
         [self.arrowGroup removeLastObject];
+        NSLog(@"Arrow too short, abort drawing...");
         return;
     }
-    
+    _activeArrow.selected = YES;
+    selectedArrow = _activeArrow;
     drawing = NO;
     arrowTag++;
+}
+
+-(void)deleteSelectedShape{
+    if (selectedArrow) {
+        [selectedArrow removeFromSuperview];
+        [self.arrowGroup removeObject:selectedArrow];
+        selectedArrow = nil;
+    }
 }
 
 - (CGFloat) pointPairToBearingDegrees:(CGPoint)startingPoint secondPoint:(CGPoint) endingPoint

@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface PTAnnotableCanvasView : UIView
-
+-(void)deleteSelectedShape;
 @end
