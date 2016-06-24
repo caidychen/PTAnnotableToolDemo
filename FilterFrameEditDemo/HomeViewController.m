@@ -1,0 +1,139 @@
+//
+//  HomeViewController.m
+//  FilterFrameEditDemo
+//
+//  Created by CHEN KAIDI on 23/6/2016.
+//  Copyright © 2016 Putao. All rights reserved.
+//
+
+#import "HomeViewController.h"
+#import "FilterManager.h"
+#import "FilterMaskView.h"
+#import "PTAnnotableCanvasView.h"
+#import "UIImage+PTImage.h"
+#import "Arrow.h"
+
+
+typedef NS_ENUM(NSInteger, FilterType){
+    FilterTypeIOSBlurEffect = 0,
+    FilterTypePixellateEffect = 1
+};
+
+@interface HomeViewController (){
+    NSInteger filterMaskTag;
+}
+@property (nonatomic, strong) UIView *canvasView;
+@property (nonatomic, strong) PTAnnotableCanvasView *annotableView;
+@property (nonatomic, strong) UIImageView *baseImageView;
+@property (nonatomic, strong) UIImage *originalImage;
+@property (nonatomic, strong) UIImage *blurredImage;
+@property (nonatomic, strong) UIImage *pixellatedImage;
+@property (nonatomic, strong) NSMutableArray *maskArray;
+@end
+
+@implementation HomeViewController
+
+#pragma mark - Life Cycle
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.view.backgroundColor = [UIColor whiteColor];
+    [self.view addSubview:self.canvasView];
+    self.originalImage = [UIImage imageNamed:@"miku.jpg"];
+    self.baseImageView.image = self.originalImage;
+    self.canvasView.height = self.view.width/self.originalImage.size.width*self.originalImage.size.height;
+    self.baseImageView.frame = self.canvasView.bounds;
+    [self.canvasView addSubview:self.baseImageView];
+    [self.canvasView addSubview:self.annotableView];
+    self.canvasView.center = self.view.center;
+    self.blurredImage = [FilterManager IOS7BlurredEffectWithImage:self.originalImage];
+    self.pixellatedImage = [FilterManager pixellateEffectWithImage:self.originalImage];
+    
+    
+    //    [self dropFilterMaskWithSourceImage:self.blurredImage];
+    //    [self dropFilterMaskWithSourceImage:self.pixellatedImage];
+    
+    //    Arrow *arrow = [[Arrow alloc] initWithFrame:self.view.bounds];
+    //    [self.view addSubview:arrow];
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - Private Methods
+-(void)dropFilterMaskWithSourceImage:(UIImage *)sourceImage{
+    FilterMaskView *maskView = [[FilterMaskView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+    [self.canvasView addSubview:maskView];
+    maskView.clampSize = self.canvasView.bounds.size;
+    maskView.tag = filterMaskTag;
+    maskView.center = CGPointMake(self.canvasView.width/2, self.canvasView.height/2);
+    maskView.didUpdateFrame = ^(NSInteger index){
+        for(FilterMaskView *maskView in self.maskArray){
+            if (maskView.tag == index) {
+                maskView.imageView.image = [sourceImage croppIngimageToRect:maskView.frame relativeToImageFrame:self.baseImageView.frame];
+                [self.canvasView bringSubviewToFront:maskView];
+                
+            }
+        }
+    };
+    
+    [self.maskArray safeAddObject:maskView];
+    maskView.didUpdateFrame(maskView.tag);
+    filterMaskTag++;
+}
+
+#pragma mark - Getters/Setters
+
+-(NSMutableArray *)maskArray{
+    if (!_maskArray) {
+        _maskArray = [[NSMutableArray alloc] init];
+    }
+    return _maskArray;
+}
+
+-(UIView *)canvasView{
+    if (!_canvasView) {
+        _canvasView = [[UIView alloc] initWithFrame:self.view.bounds];
+        _canvasView.clipsToBounds = YES;
+    }
+    return _canvasView;
+}
+
+-(PTAnnotableCanvasView *)annotableView{
+    if (!_annotableView) {
+        _annotableView = [[PTAnnotableCanvasView alloc] initWithFrame:self.canvasView.bounds];
+    }
+    return _annotableView;
+}
+
+-(UIImageView *)baseImageView{
+    if (!_baseImageView) {
+        _baseImageView = [[UIImageView alloc] initWithFrame:self.canvasView.bounds];
+        _baseImageView.contentMode = UIViewContentModeScaleAspectFit;
+    }
+    return _baseImageView;
+}
+
+-(UIImage *)originalImage{
+    if (!_originalImage) {
+        _originalImage = [[UIImage alloc] init];
+    }
+    return _originalImage;
+}
+
+-(UIImage *)blurredImage{
+    if (!_blurredImage) {
+        _blurredImage = [[UIImage alloc] init];
+    }
+    return _blurredImage;
+}
+
+-(UIImage *)pixellatedImage{
+    if (!_pixellatedImage) {
+        _pixellatedImage = [[UIImage alloc] init];
+    }
+    return _pixellatedImage;
+}
+
+@end

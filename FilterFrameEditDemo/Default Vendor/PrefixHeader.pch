@@ -1,0 +1,9 @@
+
+#ifndef PrefixHeader_pch
+#define PrefixHeader_pch
+
+
+#import "SOKit.h"
+#import "UIImageView+WebCache.h"
+#import "GPUImage/GPUImage.h"
+#endif

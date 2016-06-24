@@ -1,0 +1,24 @@
+//
+//  NOERefreshTableView.h
+//  SlimeRefresh
+//
+//  Created by soso on 14-8-11.
+//  Copyright (c) 2014年 zrz. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+#import "SRRefreshView.h"
+
+@class NOERefreshTableView;
+typedef void (^RefreshTableViewDidStartRefreshBlock)(NOERefreshTableView *resreshTableView);
+
+@interface NOERefreshTableView : UITableView
+
+@property (strong, nonatomic, readonly) SRRefreshView *refreshView;
+@property (strong, nonatomic) RefreshTableViewDidStartRefreshBlock startRefreshBlock;
+@property (nonatomic) BOOL showRefreshView;
+
+//结束下拉刷新，success为YES则显示“刷新成功”，NO显示“刷新失败”
+- (void)endRefreshSuccess:(BOOL)success;
+
+@end
