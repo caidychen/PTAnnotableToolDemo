@@ -12,7 +12,7 @@
 #define DEGREES_TO_RADIANS(x) (M_PI * (x) / 180.0)
 
 @interface Arrow ()
-@property (nonatomic, assign) BOOL selected;
+
 
 @end
 
@@ -54,6 +54,11 @@
     [path stroke];
     [path fill];
     
+}
+
+-(void)setSelected:(BOOL)selected{
+    _selected = selected;
+    [self setNeedsDisplay];
 }
 
 //-(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{

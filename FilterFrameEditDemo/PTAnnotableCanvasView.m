@@ -8,6 +8,7 @@
 
 #import "PTAnnotableCanvasView.h"
 #import "Arrow.h"
+#define kArrowChangeThreshold 20
 
 #define DEGREES_TO_RADIANS(x) (M_PI * (x) / 180.0)
 
@@ -47,8 +48,25 @@
         if (touchPoint.view == currentArrow) {
             NSLog(@"Arrow %ld touched",(long)currentArrow.tag);
             selectedArrow = currentArrow;
+            //            selectedArrow.selected = !selectedArrow.selected;
+            selectedArrow.isEditing = NO;
             arrow.hidden = YES;
             drawing = NO;
+            CGPoint localPoint = [self convertPoint:[touchPoint locationInView:self] toView:selectedArrow];
+            NSLog(@"local point %@",NSStringFromCGPoint(localPoint));
+            CGFloat tailing = [self distanceBetweenPointA:localPoint andPointB:selectedArrow.endPoint];
+            CGFloat leading = [self distanceBetweenPointA:localPoint andPointB:selectedArrow.startPoint];
+            selectedArrow.isDraggingHead = NO;
+            selectedArrow.isDraggingTail = NO;
+            selectedArrow.isDraggingSelf = NO;
+            if (tailing < kArrowChangeThreshold) {
+                selectedArrow.isDraggingTail = YES;
+            }else if (leading < kArrowChangeThreshold) {
+                selectedArrow.isDraggingHead = YES;
+            }else{
+                selectedArrow.isDraggingSelf = YES;
+            }
+            
             return;
         }
     }
@@ -70,7 +88,24 @@
         CGPoint previous = [[touches anyObject] previousLocationInView:self];
         float deltaWidth = touchPoint.x - previous.x;
         float deltaHeight = touchPoint.y - previous.y;
-        selectedArrow.center = CGPointMake(selectedArrow.center.x+deltaWidth, selectedArrow.center.y+deltaHeight);
+        
+        if (selectedArrow.isDraggingTail) {
+            selectedArrow.parentEndPoint = CGPointMake(selectedArrow.parentEndPoint.x+deltaWidth, selectedArrow.parentEndPoint.y+deltaHeight);
+            [selectedArrow updateBoundingBox];
+        }else if (selectedArrow.isDraggingHead) {
+            selectedArrow.parentStartPoint = CGPointMake(selectedArrow.parentStartPoint.x+deltaWidth, selectedArrow.parentStartPoint.y+deltaHeight);
+            [selectedArrow updateBoundingBox];
+        }else{
+            selectedArrow.center = CGPointMake(selectedArrow.center.x+deltaWidth, selectedArrow.center.y+deltaHeight);
+            selectedArrow.parentStartPoint = CGPointMake(selectedArrow.parentStartPoint.x+deltaWidth, selectedArrow.parentStartPoint.y+deltaHeight);
+            selectedArrow.parentEndPoint = CGPointMake(selectedArrow.parentEndPoint.x+deltaWidth, selectedArrow.parentEndPoint.y+deltaHeight);
+        }
+        
+        
+        
+        selectedArrow.selected = YES;
+        selectedArrow.isEditing = YES;
+        
         return;
     }
     drawing = YES;
@@ -79,23 +114,13 @@
     arrow.parentEndPoint = endPoint;
     [arrow updateBoundingBox];
     
-    //    CGFloat f = [self pointPairToBearingDegrees:startPoint secondPoint:endPoint];
-    //    CGFloat length = [self distanceBetweenPointA:startPoint andPointB:endPoint];
-    //    arrow.frame = CGRectMake(startPoint.x, startPoint.y-15, length, 30);
-    //    
-    //    arrow.transform = CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(f));
-    //    arrow.layer.anchorPoint = CGPointMake(0, 0.5);
-    //    CGRect bounds = arrow.bounds;
-    //    bounds.size.height = 30;
-    //    bounds.size.width = length;
-    //    arrow.bounds = bounds;
-    //    arrow.endPoint = CGPointMake(length, 15);
-    //    [arrow setNeedsDisplay];
-    //    NSLog(@"Length %f",length);
 }
 
 -(void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     if (!drawing) {
+        if (!selectedArrow.isEditing) {
+            selectedArrow.selected = !selectedArrow.selected;
+        }
         return;
     }
     drawing = NO;

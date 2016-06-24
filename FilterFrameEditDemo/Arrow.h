@@ -18,5 +18,10 @@
 @property (nonatomic, assign) CGPoint startPoint;
 @property (nonatomic, assign) CGPoint endPoint;
 @property (nonatomic, assign) CGFloat bearingDegrees;
+@property (nonatomic, assign) BOOL selected;
+@property (nonatomic, assign) BOOL isEditing;
+@property (nonatomic, assign) BOOL isDraggingTail;
+@property (nonatomic, assign) BOOL isDraggingHead;
+@property (nonatomic, assign) BOOL isDraggingSelf;
 -(void)updateBoundingBox;
 @end
