@@ -11,9 +11,16 @@
 
 typedef void(^DidUpdateFrame)(NSInteger index);
 
-@interface PTFilterMaskView : PTAnnotableRectangular
+typedef NS_ENUM(NSInteger, PTRectangleType){
+    PTRectangleTypeFilterMask,
+    PTRectangleTypeStandardRect,
+    PTRectangleTypeRoundedRect,
+    PTRectangleTypeOval,
+};
 
+@interface PTRectangle : PTAnnotableRectangular
 
+@property (nonatomic, assign) PTRectangleType rectangleType;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, copy) DidUpdateFrame didUpdateFrame;
 @end

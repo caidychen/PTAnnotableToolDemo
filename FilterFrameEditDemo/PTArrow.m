@@ -19,7 +19,7 @@
 
 - (id)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]){
-        
+        self.color = [UIColor redColor];
     }
     return self;
 }
@@ -27,15 +27,33 @@
 - (void)drawRect:(CGRect)rect {
     
     [super drawRect:rect];
-    [[UIColor redColor] setFill];
+    [self.color setFill];
     tailWidth = kArrowTailWith;
     headWidth = kArrowHeadWidth;
     headLength = kArrowHeadLength;
-    path = [UIBezierPath dqd_bezierPathWithArrowFromPoint:(CGPoint)self.startPoint
-                                                  toPoint:(CGPoint)self.endPoint
-                                                tailWidth:(CGFloat)tailWidth
-                                                headWidth:(CGFloat)headWidth
-                                               headLength:(CGFloat)headLength];
+    switch (self.arrowType) {
+        case PTArrowTypeStandardArrow:
+        {
+            path = [UIBezierPath dqd_bezierPathWithArrowFromPoint:(CGPoint)self.startPoint
+                                                          toPoint:(CGPoint)self.endPoint
+                                                        tailWidth:(CGFloat)tailWidth
+                                                        headWidth:(CGFloat)headWidth
+                                                       headLength:(CGFloat)headLength];
+        }
+            break;
+        case PTArrowTypeSolidLine:{
+            path = [UIBezierPath bezierPath];
+            [path moveToPoint:CGPointMake(self.startPoint.x, self.startPoint.y-1)];
+            [path addLineToPoint:CGPointMake(self.endPoint.x, self.endPoint.y-1)];
+            [path addLineToPoint:CGPointMake(self.endPoint.x, self.endPoint.y+1)];
+            [path addLineToPoint:CGPointMake(self.startPoint.x, self.endPoint.y+1)];
+        }
+            break;
+        default:
+            break;
+    }
+    
+    
     [path setLineWidth:2.0];
     [path stroke];
     [path fill];

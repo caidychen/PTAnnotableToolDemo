@@ -14,6 +14,12 @@
 #define kArrowHeadWidth 12
 #define kArrowHeadLength 22
 
+typedef NS_ENUM(NSInteger, PTArrowType){
+    PTArrowTypeStandardArrow,
+    PTArrowTypeSolidLine
+};
+
 @interface PTArrow : PTAnnotableLine
+@property (nonatomic, assign) PTArrowType arrowType;
 
 @end

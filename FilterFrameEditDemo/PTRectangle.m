@@ -6,23 +6,23 @@
 //  Copyright © 2016 Putao. All rights reserved.
 //
 
-#import "PTFilterMaskView.h"
+#import "PTRectangle.h"
 
 
-@interface PTFilterMaskView (){
-    
+@interface PTRectangle (){
+    UIBezierPath *path;
 }
 
 @end
 
-@implementation PTFilterMaskView
+@implementation PTRectangle
 
 -(instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundColor = [UIColor clearColor];
         [self.controlSurface addSubview:self.imageView];
-        
+        self.color = [UIColor redColor];
     }
     return self;
 }
@@ -30,6 +30,25 @@
 -(void)setSelected:(BOOL)selected{
     [super setSelected:selected];
     
+}
+
+-(void)drawRect:(CGRect)rect{
+    [self.color setStroke];
+    if (self.rectangleType == PTRectangleTypeStandardRect) {
+        
+        UIBezierPath *aPath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(kControlPointRadius/2, kControlPointRadius/2, self.width-kControlPointRadius, self.height-kControlPointRadius) cornerRadius:4.0];
+        aPath.lineWidth = 2;
+        [aPath stroke];
+    }else if (self.rectangleType == PTRectangleTypeOval){
+        UIBezierPath *aPath = [UIBezierPath bezierPathWithOvalInRect:CGRectMake(kControlPointRadius/2, kControlPointRadius/2, self.width-kControlPointRadius, self.height-kControlPointRadius)];
+        aPath.lineWidth = 2;
+        [aPath stroke];
+    }
+}
+
+-(void)layoutSubviews{
+    [super layoutSubviews];
+    [self setNeedsDisplay];
 }
 
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{

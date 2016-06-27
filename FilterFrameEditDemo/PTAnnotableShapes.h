@@ -7,9 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#define kControlColor [UIColor colorWithHexString:@"1b81f8"]
 
 @interface PTAnnotableShapes : UIView
 
+@property (nonatomic, strong) UIColor *color;
 @property (nonatomic, assign) BOOL selected;
 @property (nonatomic, assign) BOOL isEditing;
 

@@ -50,10 +50,16 @@
     self.controlPointBottomLeft.hidden = !selected;
     self.controlPointBottomRight.hidden = !selected;
     if (selected) {
-        self.controlSurface.layer.borderColor = [UIColor blueColor].CGColor;
+        self.controlSurface.layer.borderColor = kControlColor.CGColor;
     }else{
         self.controlSurface.layer.borderColor = [UIColor clearColor].CGColor;
     }
+}
+
+-(void)layoutSubviews{
+    [super layoutSubviews];
+    self.controlSurface.frame = CGRectMake(kControlPointRadius/2, kControlPointRadius/2, self.width-kControlPointRadius, self.height-kControlPointRadius);
+    [self updateAllControlPoints];
 }
 
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
@@ -70,19 +76,14 @@
     
     if (distA<kCornerTouchThreshold) {
         isDraggingTopLeft = YES;
-        NSLog(@"Top Left");
     }else if(distB<kCornerTouchThreshold){
         isDraggingTopRight = YES;
-        NSLog(@"Top Right");
     }else if(distC<kCornerTouchThreshold){
         isDraggingBottomLeft = YES;
-        NSLog(@"Bottom Left");
     }else if(distD<kCornerTouchThreshold){
         isDraggingBottomRight = YES;
-        NSLog(@"Bottom Right");
     }else{
         isDraggingMySelf = YES;
-        NSLog(@"Dragging myself");
     }
     
 }
@@ -95,21 +96,29 @@
     CGFloat originX = self.left;
     CGFloat originY = self.top;
     
-    if (self.width<=kCornerTouchThreshold*2) {
-        self.width = kCornerTouchThreshold*2;
+    if (self.width<=kCornerTouchThreshold) {
+        self.width = kCornerTouchThreshold;
     }
-    if (self.height<=kCornerTouchThreshold*2){
-        self.height = kCornerTouchThreshold*2;
+    if (self.height<=kCornerTouchThreshold){
+        self.height = kCornerTouchThreshold;
     }
     
-    if (self.width>kCornerTouchThreshold*2) {
+    if (self.width>kCornerTouchThreshold) {
         originX = self.left +deltaWidth;
     }
     
-    if (self.height>kCornerTouchThreshold*2){
+    if (self.height>kCornerTouchThreshold){
         originY = self.top + deltaHeight;
     }
     
+    if (self.width<=0) {
+        self.left -=deltaWidth;
+        deltaWidth = -deltaWidth;
+    }
+    if (self.height<=0) {
+        self.height -=deltaHeight;
+        deltaHeight = -deltaHeight;
+    }
     if (isDraggingTopLeft) {
         self.frame = CGRectMake(originX, originY, self.width-deltaWidth, self.height-deltaHeight);
     }else if (isDraggingTopRight) {
@@ -121,6 +130,7 @@
     }else{
         self.center = CGPointMake(self.center.x+deltaWidth, self.center.y+deltaHeight);
     }
+    NSLog(@"%@",NSStringFromCGRect(self.frame));
     self.controlSurface.frame = CGRectMake(kControlPointRadius/2, kControlPointRadius/2, self.width-kControlPointRadius, self.height-kControlPointRadius);
     [self updateAllControlPoints];
 }
@@ -147,7 +157,7 @@
         _controlPointTopLeft = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kControlPointRadius, kControlPointRadius)];
         _controlPointTopLeft.layer.cornerRadius = kControlPointRadius/2;
         _controlPointTopLeft.layer.masksToBounds = YES;
-        _controlPointTopLeft.backgroundColor = [UIColor blueColor];
+        _controlPointTopLeft.backgroundColor = kControlColor;
         _controlPointTopLeft.layer.borderColor = [UIColor whiteColor].CGColor;
         _controlPointTopLeft.layer.borderWidth = 3;
         _controlPointTopLeft.userInteractionEnabled = NO;
@@ -160,7 +170,7 @@
         _controlPointTopRight = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kControlPointRadius, kControlPointRadius)];
         _controlPointTopRight.layer.cornerRadius = kControlPointRadius/2;
         _controlPointTopRight.layer.masksToBounds = YES;
-        _controlPointTopRight.backgroundColor = [UIColor blueColor];
+        _controlPointTopRight.backgroundColor = kControlColor;
         _controlPointTopRight.layer.borderColor = [UIColor whiteColor].CGColor;
         _controlPointTopRight.layer.borderWidth = 3;
         _controlPointTopRight.userInteractionEnabled = NO;
@@ -173,7 +183,7 @@
         _controlPointBottomLeft = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kControlPointRadius, kControlPointRadius)];
         _controlPointBottomLeft.layer.cornerRadius = kControlPointRadius/2;
         _controlPointBottomLeft.layer.masksToBounds = YES;
-        _controlPointBottomLeft.backgroundColor = [UIColor blueColor];
+        _controlPointBottomLeft.backgroundColor = kControlColor;
         _controlPointBottomLeft.layer.borderColor = [UIColor whiteColor].CGColor;
         _controlPointBottomLeft.layer.borderWidth = 3;
         _controlPointBottomLeft.userInteractionEnabled = NO;
@@ -186,7 +196,7 @@
         _controlPointBottomRight = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kControlPointRadius, kControlPointRadius)];
         _controlPointBottomRight.layer.cornerRadius = kControlPointRadius/2;
         _controlPointBottomRight.layer.masksToBounds = YES;
-        _controlPointBottomRight.backgroundColor = [UIColor blueColor];
+        _controlPointBottomRight.backgroundColor = kControlColor;
         _controlPointBottomRight.layer.borderColor = [UIColor whiteColor].CGColor;
         _controlPointBottomRight.layer.borderWidth = 3;
         _controlPointBottomRight.userInteractionEnabled = NO;

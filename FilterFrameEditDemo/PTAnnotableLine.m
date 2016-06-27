@@ -35,7 +35,7 @@
         self.controlTail.hidden = YES;
         self.controlHead.hidden = YES;
     }else{
-        [[[UIColor blueColor] colorWithAlphaComponent:0.6] setStroke];
+        [kControlColor setStroke];
         self.controlTail.hidden = NO;
         self.controlHead.hidden = NO;
     }
@@ -90,7 +90,7 @@
     if (!_controlHead) {
         _controlHead = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kArrowControlWidth, kArrowControlWidth)];
         _controlHead.layer.cornerRadius = 8;
-        _controlHead.backgroundColor = [UIColor blueColor];
+        _controlHead.backgroundColor = kControlColor;
         _controlHead.layer.borderColor = [UIColor whiteColor].CGColor;
         _controlHead.layer.borderWidth = 3;
         _controlHead.layer.masksToBounds = YES;
@@ -104,7 +104,7 @@
     if (!_controlTail) {
         _controlTail = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kArrowControlWidth, kArrowControlWidth)];
         _controlTail.layer.cornerRadius = 8;
-        _controlTail.backgroundColor = [UIColor blueColor];
+        _controlTail.backgroundColor = kControlColor;
         _controlTail.layer.borderColor = [UIColor whiteColor].CGColor;
         _controlTail.layer.borderWidth = 3;
         _controlTail.layer.masksToBounds = YES;

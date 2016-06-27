@@ -8,7 +8,7 @@
 
 #import "PTAnnotableCanvasView.h"
 #import "PTArrow.h"
-#import "PTFilterMaskView.h"
+#import "PTRectangle.h"
 #import "UIImage+PTImage.h"
 
 #define kArrowChangeThreshold 32
@@ -45,15 +45,15 @@
     return self;
 }
 
--(void)dropFilterMaskWithSourceImage:(UIImage *)sourceImage{
-    PTFilterMaskView *maskView = [[PTFilterMaskView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+-(void)dropFilterMaskWithSourceImage:(UIImage *)sourceImage initialFrame:(CGRect)initialFrame{
+    PTRectangle *maskView = [[PTRectangle alloc] initWithFrame:initialFrame];
     [self addSubview:maskView];
     maskView.clampSize = self.bounds.size;
     maskView.tag = shapeTag;
-    maskView.center = CGPointMake(self.width/2, self.height/2);
+    
     maskView.didUpdateFrame = ^(NSInteger index){
         [self deselectEveryShapeExceptSelectedShape:NO];
-        for(PTFilterMaskView *maskView in self.shapeGroup){
+        for(PTRectangle *maskView in self.shapeGroup){
             if (maskView.tag == index) {
                 maskView.imageView.image = [sourceImage croppIngimageToRect:maskView.frame relativeToImageFrame:self.frame];
                 [self bringSubviewToFront:maskView];
@@ -81,16 +81,56 @@
 }
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     
-    [self startDrawingArrow:touches withEvent:event];
+    //[self startDrawingArrow:touches withEvent:event];
+    [self startDrawingRectangle:touches withEvent:event];
 }
 
 -(void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
-    [self continueDrawingArrow:touches withEvent:event];
+    //[self continueDrawingArrow:touches withEvent:event];
+    [self continueDrawingRectangle:touches withEvent:event];
 }
 
 -(void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     
-    [self endDrawingArrow:touches withEvent:event];
+    //[self endDrawingArrow:touches withEvent:event];
+    [self endDrawingRectangle:touches withEvent:event];
+}
+
+-(void)startDrawingRectangle:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    CGPoint touchPoint = [[touches anyObject] locationInView:self];
+    startPoint = touchPoint;
+    [self dropFilterMaskWithSourceImage:nil initialFrame:CGRectZero];
+    PTRectangle *activeRectangle = [self.shapeGroup lastObject];
+    activeRectangle.selected = NO;
+    activeRectangle.rectangleType = PTRectangleTypeOval;
+    activeRectangle.frame = CGRectMake(startPoint.x, startPoint.y, 20, 20);
+}
+
+-(void)continueDrawingRectangle:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    PTAnnotableRectangular *activeRectangle = [self.shapeGroup lastObject];
+    activeRectangle.userInteractionEnabled = NO;
+    CGPoint touchPoint = [[touches anyObject] locationInView:self];
+    CGPoint previous = [[touches anyObject] previousLocationInView:self];
+    float deltaWidth = touchPoint.x - previous.x;
+    float deltaHeight = touchPoint.y - previous.y;
+    drawing = YES;
+    
+    activeRectangle.frame = CGRectMake(startPoint.x, startPoint.y, activeRectangle.width+deltaWidth, activeRectangle.height+deltaHeight);
+    NSLog(@"%@",NSStringFromCGRect(activeRectangle.frame));
+}
+
+-(void)endDrawingRectangle:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    drawing = NO;
+    PTAnnotableRectangular *activeRectangle = [self.shapeGroup lastObject];
+    if (activeRectangle.width<kCornerTouchThreshold||activeRectangle.height<kCornerTouchThreshold) {
+        [activeRectangle removeFromSuperview];
+        [self.shapeGroup removeLastObject];
+        return;
+    }
+    activeRectangle.userInteractionEnabled = YES;
+    activeRectangle.selected = YES;
+    selectedShape = activeRectangle;
+    
 }
 
 -(void)startDrawingArrow:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
@@ -129,13 +169,16 @@
     }
     [self deselectEveryShapeExceptSelectedShape:YES];
     [self bringSubviewToFront:selectedShape];
-    if ([selectedShape isKindOfClass:[PTArrow class]]) {
+    
+    if (selectedShape) {
+        // if user is about to edit exsiting shape, abort new shape creation...
         return;
     }
     
     NSLog(@"Attempting to draw new arrow...");
     drawing = YES;
     PTArrow * _activeArrow = [[PTArrow alloc] initWithFrame:CGRectZero];
+    _activeArrow.arrowType = PTArrowTypeStandardArrow;
     _activeArrow.tag = shapeTag;
     // User is tapping on empty space, that means they are ready to draw a new arrow
     startPoint = [touchPoint locationInView:self];
