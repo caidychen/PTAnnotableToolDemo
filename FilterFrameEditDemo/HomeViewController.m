@@ -11,7 +11,6 @@
 #import "FilterMaskView.h"
 #import "PTAnnotableCanvasView.h"
 #import "UIImage+PTImage.h"
-#import "Arrow.h"
 
 
 typedef NS_ENUM(NSInteger, FilterType){
@@ -51,8 +50,8 @@ typedef NS_ENUM(NSInteger, FilterType){
     [self.view addSubview:self.deleteButton];
     self.deleteButton.center = CGPointMake(self.view.center.x, self.view.height-self.deleteButton.height/2);
     
-    //    [self dropFilterMaskWithSourceImage:self.blurredImage];
-    //    [self dropFilterMaskWithSourceImage:self.pixellatedImage];
+    [self dropFilterMaskWithSourceImage:self.blurredImage];
+    [self dropFilterMaskWithSourceImage:self.pixellatedImage];
     
     //    Arrow *arrow = [[Arrow alloc] initWithFrame:self.view.bounds];
     //    [self.view addSubview:arrow];

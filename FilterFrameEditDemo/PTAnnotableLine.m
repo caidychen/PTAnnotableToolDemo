@@ -1,43 +1,35 @@
 //
-//  Arrow.m
+//  PTAnnotableLine.m
 //  FilterFrameEditDemo
 //
-//  Created by CHEN KAIDI on 23/6/2016.
+//  Created by CHEN KAIDI on 27/6/2016.
 //  Copyright © 2016 Putao. All rights reserved.
 //
 
-#import "Arrow.h"
-#import "UIBezierPath+dqd_arrowhead.h"
+#import "PTAnnotableLine.h"
 
 #define DEGREES_TO_RADIANS(x) (M_PI * (x) / 180.0)
 
-@interface Arrow ()
+@interface PTAnnotableLine ()
 
+@property (nonatomic, assign) CGFloat bearingDegrees;
 
 @end
 
-@implementation Arrow{
-    CGFloat tailWidth;
-    CGFloat headWidth;
-    CGFloat headLength;
-    UIBezierPath *path;
-}
+@implementation PTAnnotableLine
 
-- (id)initWithFrame:(CGRect)frame
-{
-    if (self = [super initWithFrame:frame])
-    {
+-(instancetype)initWithFrame:(CGRect)frame{
+    self = [super initWithFrame:frame];
+    if (self) {
         [self setMultipleTouchEnabled:NO];
         [self setBackgroundColor:[UIColor clearColor]];
         [self addSubview:self.controlHead];
         [self addSubview:self.controlTail];
-        
     }
     return self;
 }
 
 - (void)drawRect:(CGRect)rect {
-    
     if (!self.selected) {
         [[UIColor clearColor] setStroke];
         self.controlTail.hidden = YES;
@@ -47,32 +39,18 @@
         self.controlTail.hidden = NO;
         self.controlHead.hidden = NO;
     }
-    [[UIColor redColor] setFill];
-    tailWidth = kArrowTailWith;
-    headWidth = kArrowHeadWidth;
-    headLength = kArrowHeadLength;
-    path = [UIBezierPath dqd_bezierPathWithArrowFromPoint:(CGPoint)self.startPoint
-                                                  toPoint:(CGPoint)self.endPoint
-                                                tailWidth:(CGFloat)tailWidth
-                                                headWidth:(CGFloat)headWidth
-                                               headLength:(CGFloat)headLength];
-    [path setLineWidth:2.0];
-    [path stroke];
-    [path fill];
-    
 }
 
 -(void)setSelected:(BOOL)selected{
-    _selected = selected;
-    [self setNeedsDisplay];
+    [super setSelected:selected];
 }
-
 
 -(void)layoutSubviews{
     [super layoutSubviews];
     self.controlTail.center = self.startPoint;
     self.controlHead.center =self.endPoint;
 }
+
 
 -(void)updateBoundingBox{
     CGFloat f = [self pointPairToBearingDegrees:self.parentStartPoint secondPoint:self.parentEndPoint];
@@ -107,13 +85,14 @@
     return dist;
 }
 
+
 -(UIView *)controlHead{
     if (!_controlHead) {
         _controlHead = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kArrowControlWidth, kArrowControlWidth)];
         _controlHead.layer.cornerRadius = 8;
         _controlHead.backgroundColor = [UIColor blueColor];
         _controlHead.layer.borderColor = [UIColor whiteColor].CGColor;
-        _controlHead.layer.borderWidth = 4;
+        _controlHead.layer.borderWidth = 3;
         _controlHead.layer.masksToBounds = YES;
         _controlHead.hidden = YES;
         _controlHead.userInteractionEnabled = NO;
@@ -127,7 +106,7 @@
         _controlTail.layer.cornerRadius = 8;
         _controlTail.backgroundColor = [UIColor blueColor];
         _controlTail.layer.borderColor = [UIColor whiteColor].CGColor;
-        _controlTail.layer.borderWidth = 4;
+        _controlTail.layer.borderWidth = 3;
         _controlTail.layer.masksToBounds = YES;
         _controlTail.hidden = YES;
         _controlTail.userInteractionEnabled = NO;

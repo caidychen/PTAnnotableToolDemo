@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		C640DF191D1CD26700B2C6D7 /* PTAnnotableCanvasView.m in Sources */ = {isa = PBXBuildFile; fileRef = C640DF181D1CD26700B2C6D7 /* PTAnnotableCanvasView.m */; };
+		C65981EE1D20C4D1008DDBB5 /* PTAnnotableShapes.m in Sources */ = {isa = PBXBuildFile; fileRef = C65981ED1D20C4D1008DDBB5 /* PTAnnotableShapes.m */; };
+		C65981F41D20CFAB008DDBB5 /* PTAnnotableLine.m in Sources */ = {isa = PBXBuildFile; fileRef = C65981F31D20CFAB008DDBB5 /* PTAnnotableLine.m */; };
+		C65981F71D20CFB9008DDBB5 /* PTAnnotableRectangular.m in Sources */ = {isa = PBXBuildFile; fileRef = C65981F61D20CFB9008DDBB5 /* PTAnnotableRectangular.m */; };
 		C6DEA1121D1B7930007B83C8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C6DEA1111D1B7930007B83C8 /* main.m */; };
 		C6DEA1151D1B7930007B83C8 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C6DEA1141D1B7930007B83C8 /* AppDelegate.m */; };
 		C6DEA1181D1B7930007B83C8 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C6DEA1171D1B7930007B83C8 /* ViewController.m */; };
@@ -298,12 +301,19 @@
 		C6DEA4981D1B85DE007B83C8 /* FilterMaskView.m in Sources */ = {isa = PBXBuildFile; fileRef = C6DEA4971D1B85DE007B83C8 /* FilterMaskView.m */; };
 		C6DEA49B1D1BA73E007B83C8 /* UIImage+PTImage.m in Sources */ = {isa = PBXBuildFile; fileRef = C6DEA49A1D1BA73E007B83C8 /* UIImage+PTImage.m */; };
 		C6DEA49E1D1BFA1F007B83C8 /* UIBezierPath+dqd_arrowhead.m in Sources */ = {isa = PBXBuildFile; fileRef = C6DEA49D1D1BFA1F007B83C8 /* UIBezierPath+dqd_arrowhead.m */; };
-		C6DEA4A11D1BFC23007B83C8 /* Arrow.m in Sources */ = {isa = PBXBuildFile; fileRef = C6DEA4A01D1BFC23007B83C8 /* Arrow.m */; };
+		C6DEA4A11D1BFC23007B83C8 /* PTArrow.m in Sources */ = {isa = PBXBuildFile; fileRef = C6DEA4A01D1BFC23007B83C8 /* PTArrow.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		C640DF171D1CD26700B2C6D7 /* PTAnnotableCanvasView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTAnnotableCanvasView.h; sourceTree = "<group>"; };
 		C640DF181D1CD26700B2C6D7 /* PTAnnotableCanvasView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTAnnotableCanvasView.m; sourceTree = "<group>"; };
+		C65981EB1D20C08F008DDBB5 /* FilterManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FilterManager.h; sourceTree = "<group>"; };
+		C65981EC1D20C4D1008DDBB5 /* PTAnnotableShapes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTAnnotableShapes.h; sourceTree = "<group>"; };
+		C65981ED1D20C4D1008DDBB5 /* PTAnnotableShapes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTAnnotableShapes.m; sourceTree = "<group>"; };
+		C65981F21D20CFAB008DDBB5 /* PTAnnotableLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTAnnotableLine.h; sourceTree = "<group>"; };
+		C65981F31D20CFAB008DDBB5 /* PTAnnotableLine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTAnnotableLine.m; sourceTree = "<group>"; };
+		C65981F51D20CFB9008DDBB5 /* PTAnnotableRectangular.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTAnnotableRectangular.h; sourceTree = "<group>"; };
+		C65981F61D20CFB9008DDBB5 /* PTAnnotableRectangular.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTAnnotableRectangular.m; sourceTree = "<group>"; };
 		C6DEA10D1D1B7930007B83C8 /* FilterFrameEditDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FilterFrameEditDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6DEA1111D1B7930007B83C8 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		C6DEA1131D1B7930007B83C8 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -890,8 +900,8 @@
 		C6DEA49A1D1BA73E007B83C8 /* UIImage+PTImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+PTImage.m"; sourceTree = "<group>"; };
 		C6DEA49C1D1BFA1F007B83C8 /* UIBezierPath+dqd_arrowhead.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIBezierPath+dqd_arrowhead.h"; sourceTree = "<group>"; };
 		C6DEA49D1D1BFA1F007B83C8 /* UIBezierPath+dqd_arrowhead.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIBezierPath+dqd_arrowhead.m"; sourceTree = "<group>"; };
-		C6DEA49F1D1BFC23007B83C8 /* Arrow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Arrow.h; sourceTree = "<group>"; };
-		C6DEA4A01D1BFC23007B83C8 /* Arrow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Arrow.m; sourceTree = "<group>"; };
+		C6DEA49F1D1BFC23007B83C8 /* PTArrow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTArrow.h; sourceTree = "<group>"; };
+		C6DEA4A01D1BFC23007B83C8 /* PTArrow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTArrow.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -910,10 +920,6 @@
 			children = (
 				C640DF171D1CD26700B2C6D7 /* PTAnnotableCanvasView.h */,
 				C640DF181D1CD26700B2C6D7 /* PTAnnotableCanvasView.m */,
-				C6DEA49C1D1BFA1F007B83C8 /* UIBezierPath+dqd_arrowhead.h */,
-				C6DEA49D1D1BFA1F007B83C8 /* UIBezierPath+dqd_arrowhead.m */,
-				C6DEA49F1D1BFC23007B83C8 /* Arrow.h */,
-				C6DEA4A01D1BFC23007B83C8 /* Arrow.m */,
 			);
 			name = PTAnnotable;
 			sourceTree = "<group>";
@@ -921,12 +927,53 @@
 		C640DF1B1D1CF8A200B2C6D7 /* PTFilterFrame */ = {
 			isa = PBXGroup;
 			children = (
-				C6DEA4931D1B7FE4007B83C8 /* FilterManager.h */,
+				C65981EB1D20C08F008DDBB5 /* FilterManager.h */,
 				C6DEA4941D1B7FE4007B83C8 /* FilterManager.m */,
-				C6DEA4961D1B85DE007B83C8 /* FilterMaskView.h */,
-				C6DEA4971D1B85DE007B83C8 /* FilterMaskView.m */,
 			);
 			name = PTFilterFrame;
+			sourceTree = "<group>";
+		};
+		C65981EF1D20CE2A008DDBB5 /* PTAnnotableShapes */ = {
+			isa = PBXGroup;
+			children = (
+				C65981EC1D20C4D1008DDBB5 /* PTAnnotableShapes.h */,
+				C65981ED1D20C4D1008DDBB5 /* PTAnnotableShapes.m */,
+				C65981F01D20CE69008DDBB5 /* TwoControls */,
+				C65981F11D20CE81008DDBB5 /* FourControls */,
+			);
+			name = PTAnnotableShapes;
+			sourceTree = "<group>";
+		};
+		C65981F01D20CE69008DDBB5 /* TwoControls */ = {
+			isa = PBXGroup;
+			children = (
+				C65981F81D20D2BA008DDBB5 /* PTArrow */,
+				C65981F21D20CFAB008DDBB5 /* PTAnnotableLine.h */,
+				C65981F31D20CFAB008DDBB5 /* PTAnnotableLine.m */,
+			);
+			name = TwoControls;
+			sourceTree = "<group>";
+		};
+		C65981F11D20CE81008DDBB5 /* FourControls */ = {
+			isa = PBXGroup;
+			children = (
+				C6DEA4961D1B85DE007B83C8 /* FilterMaskView.h */,
+				C6DEA4971D1B85DE007B83C8 /* FilterMaskView.m */,
+				C65981F51D20CFB9008DDBB5 /* PTAnnotableRectangular.h */,
+				C65981F61D20CFB9008DDBB5 /* PTAnnotableRectangular.m */,
+			);
+			name = FourControls;
+			sourceTree = "<group>";
+		};
+		C65981F81D20D2BA008DDBB5 /* PTArrow */ = {
+			isa = PBXGroup;
+			children = (
+				C6DEA49C1D1BFA1F007B83C8 /* UIBezierPath+dqd_arrowhead.h */,
+				C6DEA49D1D1BFA1F007B83C8 /* UIBezierPath+dqd_arrowhead.m */,
+				C6DEA49F1D1BFC23007B83C8 /* PTArrow.h */,
+				C6DEA4A01D1BFC23007B83C8 /* PTArrow.m */,
+			);
+			name = PTArrow;
 			sourceTree = "<group>";
 		};
 		C6DEA1041D1B792F007B83C8 = {
@@ -955,6 +1002,7 @@
 				C6DEA1171D1B7930007B83C8 /* ViewController.m */,
 				C6DEA48B1D1B7AFB007B83C8 /* HomeViewController.h */,
 				C6DEA48C1D1B7AFB007B83C8 /* HomeViewController.m */,
+				C65981EF1D20CE2A008DDBB5 /* PTAnnotableShapes */,
 				C640DF1A1D1CF88100B2C6D7 /* PTAnnotable */,
 				C640DF1B1D1CF8A200B2C6D7 /* PTFilterFrame */,
 				C6DEA4991D1BA73E007B83C8 /* UIImage+PTImage.h */,
@@ -962,6 +1010,7 @@
 				C6DEA48E1D1B7D24007B83C8 /* miku.jpg */,
 				C6DEA1191D1B7930007B83C8 /* Main.storyboard */,
 				C6DEA11C1D1B7930007B83C8 /* Assets.xcassets */,
+				C6DEA4931D1B7FE4007B83C8 /* FilterManager.h */,
 				C6DEA11E1D1B7930007B83C8 /* LaunchScreen.storyboard */,
 				C6DEA1211D1B7930007B83C8 /* Info.plist */,
 				C6DEA1101D1B7930007B83C8 /* Supporting Files */,
@@ -1832,7 +1881,7 @@
 				C6DEA43E1D1B7A39007B83C8 /* GPUImageMotionBlurFilter.m in Sources */,
 				C6DEA45C1D1B7A39007B83C8 /* GPUImageRGBFilter.m in Sources */,
 				C6DEA4201D1B7A39007B83C8 /* GPUImageHighPassFilter.m in Sources */,
-				C6DEA4A11D1BFC23007B83C8 /* Arrow.m in Sources */,
+				C6DEA4A11D1BFC23007B83C8 /* PTArrow.m in Sources */,
 				C6DEA2391D1B79D9007B83C8 /* UIImageView+HighlightedWebCache.m in Sources */,
 				C6DEA3FE1D1B7A39007B83C8 /* GPUImageCropFilter.m in Sources */,
 				C6DEA3E11D1B7A39007B83C8 /* GPUImage3x3ConvolutionFilter.m in Sources */,
@@ -1901,6 +1950,7 @@
 				C6DEA4871D1B7A39007B83C8 /* GPUImageWhiteBalanceFilter.m in Sources */,
 				C6DEA4501D1B7A39007B83C8 /* GPUImagePixellateFilter.m in Sources */,
 				C6DEA21B1D1B79D9007B83C8 /* AFHTTPRequestOperationManager.m in Sources */,
+				C65981F41D20CFAB008DDBB5 /* PTAnnotableLine.m in Sources */,
 				C6DEA43C1D1B7A39007B83C8 /* GPUImageMonochromeFilter.m in Sources */,
 				C6DEA2281D1B79D9007B83C8 /* UIProgressView+AFNetworking.m in Sources */,
 				C6DEA4401D1B7A39007B83C8 /* GPUImageMovie.m in Sources */,
@@ -1915,6 +1965,7 @@
 				C6DEA3F41D1B7A39007B83C8 /* GPUImageColorBurnBlendFilter.m in Sources */,
 				C6DEA40B1D1B7A39007B83C8 /* GPUImageExposureFilter.m in Sources */,
 				C6DEA3E71D1B7A39007B83C8 /* GPUImageAverageColor.m in Sources */,
+				C65981EE1D20C4D1008DDBB5 /* PTAnnotableShapes.m in Sources */,
 				C6DEA4421D1B7A39007B83C8 /* GPUImageMovieWriter.m in Sources */,
 				C6DEA3E51D1B7A39007B83C8 /* GPUImageAlphaBlendFilter.m in Sources */,
 				C6DEA46D1D1B7A39007B83C8 /* GPUImageSphereRefractionFilter.m in Sources */,
@@ -2032,6 +2083,7 @@
 				C6DEA26B1D1B79D9007B83C8 /* SOPopoverView.m in Sources */,
 				C6DEA4131D1B7A39007B83C8 /* GPUImageFramebufferCache.m in Sources */,
 				C6DEA2791D1B79D9007B83C8 /* SOScrollViewAutoView.m in Sources */,
+				C65981F71D20CFB9008DDBB5 /* PTAnnotableRectangular.m in Sources */,
 				C6DEA4671D1B7A39007B83C8 /* GPUImageSmoothToonFilter.m in Sources */,
 				C6DEA2571D1B79D9007B83C8 /* SOHTTPRequestModel.m in Sources */,
 				C6DEA2251D1B79D9007B83C8 /* UIAlertView+AFNetworking.m in Sources */,

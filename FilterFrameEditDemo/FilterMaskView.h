@@ -7,9 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PTAnnotableRectangular.h"
+
 typedef void(^DidUpdateFrame)(NSInteger index);
-@interface FilterMaskView : UIView
-@property (nonatomic, assign) CGSize clampSize;
+
+@interface FilterMaskView : PTAnnotableRectangular
+
+
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, copy) DidUpdateFrame didUpdateFrame;
 @end

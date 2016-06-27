@@ -7,7 +7,8 @@
 //
 
 #import "PTAnnotableCanvasView.h"
-#import "Arrow.h"
+#import "PTArrow.h"
+#import "PTAnnotableShapes.h"
 #define kArrowChangeThreshold 32
 
 #define DEGREES_TO_RADIANS(x) (M_PI * (x) / 180.0)
@@ -16,7 +17,7 @@
     CGPoint startPoint;
     CGPoint endPoint;
     
-    Arrow *selectedArrow;
+    PTAnnotableShapes *selectedShape;
     NSInteger arrowTag;
     BOOL drawing;
 }
@@ -56,16 +57,20 @@
 
 -(void)startDrawingArrow:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     UITouch* touchPoint = [touches anyObject];
+    if (![selectedShape isKindOfClass:[PTArrow class]] && selectedShape!=nil) {
+        return;
+    }
     
     // Check if user is tapping on existing arrow on the canvas
-    for(Arrow * currentArrow in self.arrowGroup){
+    for(PTArrow * currentArrow in self.arrowGroup){
         if (touchPoint.view == currentArrow) {
             NSLog(@"Arrow %ld touched",(long)currentArrow.tag);
-            selectedArrow = currentArrow;
-            selectedArrow.isEditing = NO;
-            //            _activeArrow.hidden = YES;
+            selectedShape = currentArrow;
+            selectedShape.isEditing = NO;
+            PTArrow *selectedArrow = (PTArrow *)selectedShape;
+            
             drawing = NO;
-            CGPoint localPoint = [self convertPoint:[touchPoint locationInView:self] toView:selectedArrow];
+            CGPoint localPoint = [self convertPoint:[touchPoint locationInView:self] toView:selectedShape];
             CGFloat tailing = [self distanceBetweenPointA:localPoint andPointB:selectedArrow.endPoint];
             CGFloat leading = [self distanceBetweenPointA:localPoint andPointB:selectedArrow.startPoint];
             selectedArrow.isDraggingHead = NO;
@@ -83,22 +88,22 @@
             
             break;
         }else{
-            selectedArrow = nil;
+            selectedShape = nil;
             
         }
     }
-    for(Arrow * currentArrow in self.arrowGroup){
-        if (currentArrow != selectedArrow) {
+    for(PTArrow * currentArrow in self.arrowGroup){
+        if (currentArrow != selectedShape) {
             currentArrow.selected = NO;
         }
     }
-    if (selectedArrow) {
+    if (selectedShape) {
         return;
     }
     
     NSLog(@"Attempting to draw new arrow...");
     drawing = YES;
-    Arrow * _activeArrow = [[Arrow alloc] initWithFrame:CGRectZero];
+    PTArrow * _activeArrow = [[PTArrow alloc] initWithFrame:CGRectZero];
     _activeArrow.tag = arrowTag;
     // User is tapping on empty space, that means they are ready to draw a new arrow
     startPoint = [touchPoint locationInView:self];
@@ -117,7 +122,10 @@
 -(void)continueDrawingArrow:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     UITouch* touchPoint = [touches anyObject];
     // If new arrow is not being drawn, that means user is editing selected arrow
-    
+    if (![selectedShape isKindOfClass:[PTArrow class]] && selectedShape!=nil) {
+        return;
+    }
+    PTArrow *selectedArrow = (PTArrow *)selectedShape;
     if (selectedArrow) {
         CGPoint touchPoint = [[touches anyObject] locationInView:self];
         CGPoint previous = [[touches anyObject] previousLocationInView:self];
@@ -142,7 +150,7 @@
     }
     
     // Otherwise, draw a new arrow
-    Arrow *_activeArrow = [self.arrowGroup lastObject];
+    PTArrow *_activeArrow = [self.arrowGroup lastObject];
     drawing = YES;
     endPoint = [touchPoint locationInView:self];
     _activeArrow.parentStartPoint = startPoint;
@@ -155,14 +163,14 @@
     // If user finished editing current arrow, return.
     if (!drawing) {
         
-        if (!selectedArrow.isEditing) {
-            selectedArrow.selected = !selectedArrow.selected;
+        if (!selectedShape.isEditing) {
+            selectedShape.selected = !selectedShape.selected;
         }
         return;
     }
     
     // If the new arrow is too short, discard it.
-    Arrow *_activeArrow = [self.arrowGroup lastObject];
+    PTArrow *_activeArrow = [self.arrowGroup lastObject];
     if (_activeArrow.endPoint.x < kArrowHeadLength) {
         [_activeArrow removeFromSuperview];
         [self.arrowGroup removeLastObject];
@@ -170,16 +178,16 @@
         return;
     }
     _activeArrow.selected = YES;
-    selectedArrow = _activeArrow;
+    selectedShape = _activeArrow;
     drawing = NO;
     arrowTag++;
 }
 
 -(void)deleteSelectedShape{
-    if (selectedArrow) {
-        [selectedArrow removeFromSuperview];
-        [self.arrowGroup removeObject:selectedArrow];
-        selectedArrow = nil;
+    if (selectedShape) {
+        [selectedShape removeFromSuperview];
+        [self.arrowGroup removeObject:selectedShape];
+        selectedShape = nil;
     }
 }
 
