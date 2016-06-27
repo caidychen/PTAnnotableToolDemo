@@ -26,7 +26,7 @@
     if (self) {
         [self addSubview:self.controlSurface];
         self.controlSurface.layer.borderWidth = 1;
-        self.controlSurface.layer.borderColor = [UIColor blueColor].CGColor;
+        self.controlSurface.layer.borderColor = [UIColor clearColor].CGColor;
         [self addSubview:self.controlPointTopLeft];
         [self addSubview:self.controlPointTopRight];
         [self addSubview:self.controlPointBottomLeft];
@@ -43,6 +43,19 @@
     self.controlPointBottomRight.center = CGPointMake(self.controlSurface.right, self.controlSurface.bottom);
 }
 
+-(void)setSelected:(BOOL)selected{
+    [super setSelected:selected];
+    self.controlPointTopLeft.hidden = !selected;
+    self.controlPointTopRight.hidden = !selected;
+    self.controlPointBottomLeft.hidden = !selected;
+    self.controlPointBottomRight.hidden = !selected;
+    if (selected) {
+        self.controlSurface.layer.borderColor = [UIColor blueColor].CGColor;
+    }else{
+        self.controlSurface.layer.borderColor = [UIColor clearColor].CGColor;
+    }
+}
+
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     touchStart = [[touches anyObject] locationInView:self];
     CGFloat distA = [self distanceBetweenPointA:touchStart andPointB:CGPointZero];
@@ -54,6 +67,7 @@
     isDraggingBottomLeft = NO;
     isDraggingBottomRight = NO;
     isDraggingMySelf = NO;
+    
     if (distA<kCornerTouchThreshold) {
         isDraggingTopLeft = YES;
         NSLog(@"Top Left");

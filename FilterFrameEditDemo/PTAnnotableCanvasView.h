@@ -10,4 +10,5 @@
 
 @interface PTAnnotableCanvasView : UIView
 -(void)deleteSelectedShape;
+-(void)dropFilterMaskWithSourceImage:(UIImage *)sourceImage;
 @end

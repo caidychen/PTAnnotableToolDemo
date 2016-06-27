@@ -8,7 +8,7 @@
 
 #import "HomeViewController.h"
 #import "FilterManager.h"
-#import "FilterMaskView.h"
+#import "PTFilterMaskView.h"
 #import "PTAnnotableCanvasView.h"
 #import "UIImage+PTImage.h"
 
@@ -50,8 +50,8 @@ typedef NS_ENUM(NSInteger, FilterType){
     [self.view addSubview:self.deleteButton];
     self.deleteButton.center = CGPointMake(self.view.center.x, self.view.height-self.deleteButton.height/2);
     
-    [self dropFilterMaskWithSourceImage:self.blurredImage];
-    [self dropFilterMaskWithSourceImage:self.pixellatedImage];
+    [self.annotableView dropFilterMaskWithSourceImage:self.blurredImage];
+    [self.annotableView dropFilterMaskWithSourceImage:self.pixellatedImage];
     
     //    Arrow *arrow = [[Arrow alloc] initWithFrame:self.view.bounds];
     //    [self.view addSubview:arrow];
@@ -63,26 +63,7 @@ typedef NS_ENUM(NSInteger, FilterType){
 }
 
 #pragma mark - Private Methods
--(void)dropFilterMaskWithSourceImage:(UIImage *)sourceImage{
-    FilterMaskView *maskView = [[FilterMaskView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
-    [self.canvasView addSubview:maskView];
-    maskView.clampSize = self.canvasView.bounds.size;
-    maskView.tag = filterMaskTag;
-    maskView.center = CGPointMake(self.canvasView.width/2, self.canvasView.height/2);
-    maskView.didUpdateFrame = ^(NSInteger index){
-        for(FilterMaskView *maskView in self.maskArray){
-            if (maskView.tag == index) {
-                maskView.imageView.image = [sourceImage croppIngimageToRect:maskView.frame relativeToImageFrame:self.baseImageView.frame];
-                [self.canvasView bringSubviewToFront:maskView];
-                
-            }
-        }
-    };
-    
-    [self.maskArray safeAddObject:maskView];
-    maskView.didUpdateFrame(maskView.tag);
-    filterMaskTag++;
-}
+
 
 -(void)toggleDeleteSelectedShape{
     [self.annotableView deleteSelectedShape];

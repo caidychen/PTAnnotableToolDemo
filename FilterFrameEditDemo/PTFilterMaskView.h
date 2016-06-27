@@ -11,7 +11,7 @@
 
 typedef void(^DidUpdateFrame)(NSInteger index);
 
-@interface FilterMaskView : PTAnnotableRectangular
+@interface PTFilterMaskView : PTAnnotableRectangular
 
 
 @property (nonatomic, strong) UIImageView *imageView;

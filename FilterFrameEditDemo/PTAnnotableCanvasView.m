@@ -8,7 +8,9 @@
 
 #import "PTAnnotableCanvasView.h"
 #import "PTArrow.h"
-#import "PTAnnotableShapes.h"
+#import "PTFilterMaskView.h"
+#import "UIImage+PTImage.h"
+
 #define kArrowChangeThreshold 32
 
 #define DEGREES_TO_RADIANS(x) (M_PI * (x) / 180.0)
@@ -18,11 +20,12 @@
     CGPoint endPoint;
     
     PTAnnotableShapes *selectedShape;
-    NSInteger arrowTag;
+    NSInteger shapeTag;
+    
     BOOL drawing;
 }
 
-@property (nonatomic, strong) NSMutableArray *arrowGroup;
+@property (nonatomic, strong) NSMutableArray *shapeGroup;
 //@property (nonatomic, strong) Arrow *activeArrow;
 
 @end
@@ -37,10 +40,45 @@
         self.layer.borderWidth = 2;
         //        _activeArrow = [[Arrow alloc] initWithFrame:CGRectZero];
         //        [self addSubview:_activeArrow];
+        
     }
     return self;
 }
 
+-(void)dropFilterMaskWithSourceImage:(UIImage *)sourceImage{
+    PTFilterMaskView *maskView = [[PTFilterMaskView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+    [self addSubview:maskView];
+    maskView.clampSize = self.bounds.size;
+    maskView.tag = shapeTag;
+    maskView.center = CGPointMake(self.width/2, self.height/2);
+    maskView.didUpdateFrame = ^(NSInteger index){
+        [self deselectEveryShapeExceptSelectedShape:NO];
+        for(PTFilterMaskView *maskView in self.shapeGroup){
+            if (maskView.tag == index) {
+                maskView.imageView.image = [sourceImage croppIngimageToRect:maskView.frame relativeToImageFrame:self.frame];
+                [self bringSubviewToFront:maskView];
+                selectedShape = maskView;
+                maskView.selected = YES;
+            }
+        }
+    };
+    
+    [self.shapeGroup safeAddObject:maskView];
+    maskView.didUpdateFrame(maskView.tag);
+    shapeTag++;
+}
+
+-(void)deselectEveryShapeExceptSelectedShape:(BOOL)exceptSelected{
+    for(PTAnnotableShapes * currentShape in self.shapeGroup){
+        if (currentShape != selectedShape) {
+            currentShape.selected = NO;
+        }else{
+            if (!exceptSelected) {
+                currentShape.selected = NO;
+            }
+        }
+    }
+}
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     
     [self startDrawingArrow:touches withEvent:event];
@@ -57,12 +95,9 @@
 
 -(void)startDrawingArrow:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     UITouch* touchPoint = [touches anyObject];
-    if (![selectedShape isKindOfClass:[PTArrow class]] && selectedShape!=nil) {
-        return;
-    }
     
     // Check if user is tapping on existing arrow on the canvas
-    for(PTArrow * currentArrow in self.arrowGroup){
+    for(PTArrow * currentArrow in self.shapeGroup){
         if (touchPoint.view == currentArrow) {
             NSLog(@"Arrow %ld touched",(long)currentArrow.tag);
             selectedShape = currentArrow;
@@ -92,19 +127,16 @@
             
         }
     }
-    for(PTArrow * currentArrow in self.arrowGroup){
-        if (currentArrow != selectedShape) {
-            currentArrow.selected = NO;
-        }
-    }
-    if (selectedShape) {
+    [self deselectEveryShapeExceptSelectedShape:YES];
+    [self bringSubviewToFront:selectedShape];
+    if ([selectedShape isKindOfClass:[PTArrow class]]) {
         return;
     }
     
     NSLog(@"Attempting to draw new arrow...");
     drawing = YES;
     PTArrow * _activeArrow = [[PTArrow alloc] initWithFrame:CGRectZero];
-    _activeArrow.tag = arrowTag;
+    _activeArrow.tag = shapeTag;
     // User is tapping on empty space, that means they are ready to draw a new arrow
     startPoint = [touchPoint locationInView:self];
     endPoint = [touchPoint locationInView:self];
@@ -115,16 +147,14 @@
     _activeArrow.hidden = NO;
     [_activeArrow updateBoundingBox];
     
-    [self.arrowGroup addObject:_activeArrow];
+    [self.shapeGroup addObject:_activeArrow];
     [self addSubview:_activeArrow];
 }
 
 -(void)continueDrawingArrow:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     UITouch* touchPoint = [touches anyObject];
     // If new arrow is not being drawn, that means user is editing selected arrow
-    if (![selectedShape isKindOfClass:[PTArrow class]] && selectedShape!=nil) {
-        return;
-    }
+    
     PTArrow *selectedArrow = (PTArrow *)selectedShape;
     if (selectedArrow) {
         CGPoint touchPoint = [[touches anyObject] locationInView:self];
@@ -150,7 +180,7 @@
     }
     
     // Otherwise, draw a new arrow
-    PTArrow *_activeArrow = [self.arrowGroup lastObject];
+    PTAnnotableLine *_activeArrow = [self.shapeGroup lastObject];
     drawing = YES;
     endPoint = [touchPoint locationInView:self];
     _activeArrow.parentStartPoint = startPoint;
@@ -164,29 +194,31 @@
     if (!drawing) {
         
         if (!selectedShape.isEditing) {
-            selectedShape.selected = !selectedShape.selected;
+            if (!selectedShape.selected) {
+                selectedShape.selected = !selectedShape.selected;
+            }
         }
         return;
     }
     
     // If the new arrow is too short, discard it.
-    PTArrow *_activeArrow = [self.arrowGroup lastObject];
+    PTAnnotableLine *_activeArrow = [self.shapeGroup lastObject];
     if (_activeArrow.endPoint.x < kArrowHeadLength) {
         [_activeArrow removeFromSuperview];
-        [self.arrowGroup removeLastObject];
+        [self.shapeGroup removeLastObject];
         NSLog(@"Arrow too short, abort drawing...");
         return;
     }
     _activeArrow.selected = YES;
     selectedShape = _activeArrow;
     drawing = NO;
-    arrowTag++;
+    shapeTag++;
 }
 
 -(void)deleteSelectedShape{
     if (selectedShape) {
         [selectedShape removeFromSuperview];
-        [self.arrowGroup removeObject:selectedShape];
+        [self.shapeGroup removeObject:selectedShape];
         selectedShape = nil;
     }
 }
@@ -207,11 +239,11 @@
     return dist;
 }
 
--(NSMutableArray *)arrowGroup{
-    if (!_arrowGroup) {
-        _arrowGroup = [[NSMutableArray alloc] init];
+-(NSMutableArray *)shapeGroup{
+    if (!_shapeGroup) {
+        _shapeGroup = [[NSMutableArray alloc] init];
     }
-    return _arrowGroup;
+    return _shapeGroup;
 }
 
 @end

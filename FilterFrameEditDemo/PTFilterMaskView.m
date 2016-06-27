@@ -6,16 +6,16 @@
 //  Copyright © 2016 Putao. All rights reserved.
 //
 
-#import "FilterMaskView.h"
+#import "PTFilterMaskView.h"
 
 
-@interface FilterMaskView (){
+@interface PTFilterMaskView (){
     
 }
 
 @end
 
-@implementation FilterMaskView
+@implementation PTFilterMaskView
 
 -(instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
@@ -27,6 +27,10 @@
     return self;
 }
 
+-(void)setSelected:(BOOL)selected{
+    [super setSelected:selected];
+    
+}
 
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     [super touchesBegan:touches withEvent:event];
@@ -54,7 +58,6 @@
         rightClamp = self.right-self.clampSize.width;
     }
     self.imageView.frame = CGRectMake(-kControlPointRadius/2+leftClamp, -kControlPointRadius/2+topClamp, self.width-leftClamp-rightClamp, self.height-bottomClamp-topClamp);
-    NSLog(@"Current mask:%@",NSStringFromCGRect(self.frame));
     if (self.didUpdateFrame) {
         self.didUpdateFrame(self.tag);
     }

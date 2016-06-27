@@ -298,7 +298,7 @@
 		C6DEA48D1D1B7AFB007B83C8 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C6DEA48C1D1B7AFB007B83C8 /* HomeViewController.m */; };
 		C6DEA48F1D1B7D24007B83C8 /* miku.jpg in Resources */ = {isa = PBXBuildFile; fileRef = C6DEA48E1D1B7D24007B83C8 /* miku.jpg */; };
 		C6DEA4951D1B7FE4007B83C8 /* FilterManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C6DEA4941D1B7FE4007B83C8 /* FilterManager.m */; };
-		C6DEA4981D1B85DE007B83C8 /* FilterMaskView.m in Sources */ = {isa = PBXBuildFile; fileRef = C6DEA4971D1B85DE007B83C8 /* FilterMaskView.m */; };
+		C6DEA4981D1B85DE007B83C8 /* PTFilterMaskView.m in Sources */ = {isa = PBXBuildFile; fileRef = C6DEA4971D1B85DE007B83C8 /* PTFilterMaskView.m */; };
 		C6DEA49B1D1BA73E007B83C8 /* UIImage+PTImage.m in Sources */ = {isa = PBXBuildFile; fileRef = C6DEA49A1D1BA73E007B83C8 /* UIImage+PTImage.m */; };
 		C6DEA49E1D1BFA1F007B83C8 /* UIBezierPath+dqd_arrowhead.m in Sources */ = {isa = PBXBuildFile; fileRef = C6DEA49D1D1BFA1F007B83C8 /* UIBezierPath+dqd_arrowhead.m */; };
 		C6DEA4A11D1BFC23007B83C8 /* PTArrow.m in Sources */ = {isa = PBXBuildFile; fileRef = C6DEA4A01D1BFC23007B83C8 /* PTArrow.m */; };
@@ -894,8 +894,8 @@
 		C6DEA48E1D1B7D24007B83C8 /* miku.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = miku.jpg; sourceTree = "<group>"; };
 		C6DEA4931D1B7FE4007B83C8 /* FilterManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilterManager.h; sourceTree = "<group>"; };
 		C6DEA4941D1B7FE4007B83C8 /* FilterManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FilterManager.m; sourceTree = "<group>"; };
-		C6DEA4961D1B85DE007B83C8 /* FilterMaskView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilterMaskView.h; sourceTree = "<group>"; };
-		C6DEA4971D1B85DE007B83C8 /* FilterMaskView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FilterMaskView.m; sourceTree = "<group>"; };
+		C6DEA4961D1B85DE007B83C8 /* PTFilterMaskView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTFilterMaskView.h; sourceTree = "<group>"; };
+		C6DEA4971D1B85DE007B83C8 /* PTFilterMaskView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTFilterMaskView.m; sourceTree = "<group>"; };
 		C6DEA4991D1BA73E007B83C8 /* UIImage+PTImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+PTImage.h"; sourceTree = "<group>"; };
 		C6DEA49A1D1BA73E007B83C8 /* UIImage+PTImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+PTImage.m"; sourceTree = "<group>"; };
 		C6DEA49C1D1BFA1F007B83C8 /* UIBezierPath+dqd_arrowhead.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIBezierPath+dqd_arrowhead.h"; sourceTree = "<group>"; };
@@ -957,8 +957,8 @@
 		C65981F11D20CE81008DDBB5 /* FourControls */ = {
 			isa = PBXGroup;
 			children = (
-				C6DEA4961D1B85DE007B83C8 /* FilterMaskView.h */,
-				C6DEA4971D1B85DE007B83C8 /* FilterMaskView.m */,
+				C6DEA4961D1B85DE007B83C8 /* PTFilterMaskView.h */,
+				C6DEA4971D1B85DE007B83C8 /* PTFilterMaskView.m */,
 				C65981F51D20CFB9008DDBB5 /* PTAnnotableRectangular.h */,
 				C65981F61D20CFB9008DDBB5 /* PTAnnotableRectangular.m */,
 			);
@@ -2008,7 +2008,7 @@
 				C6DEA4471D1B7A39007B83C8 /* GPUImageOpacityFilter.m in Sources */,
 				C6DEA4321D1B7A39007B83C8 /* GPUImageLocalBinaryPatternFilter.m in Sources */,
 				C6DEA46F1D1B7A39007B83C8 /* GPUImageStretchDistortionFilter.m in Sources */,
-				C6DEA4981D1B85DE007B83C8 /* FilterMaskView.m in Sources */,
+				C6DEA4981D1B85DE007B83C8 /* PTFilterMaskView.m in Sources */,
 				C6DEA21F1D1B79D9007B83C8 /* AFURLConnectionOperation.m in Sources */,
 				C6DEA2361D1B79D9007B83C8 /* UIButton+WebCache.m in Sources */,
 				C6DEA23B1D1B79D9007B83C8 /* UIView+WebCacheOperation.m in Sources */,
