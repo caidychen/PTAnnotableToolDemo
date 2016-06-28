@@ -22,4 +22,8 @@
     _selected = selected;
 }
 
+-(void)setColor:(UIColor *)color{
+    _color = color;
+}
+
 @end

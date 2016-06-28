@@ -11,6 +11,7 @@
 		C65981EE1D20C4D1008DDBB5 /* PTAnnotableShapes.m in Sources */ = {isa = PBXBuildFile; fileRef = C65981ED1D20C4D1008DDBB5 /* PTAnnotableShapes.m */; };
 		C65981F41D20CFAB008DDBB5 /* PTAnnotableLine.m in Sources */ = {isa = PBXBuildFile; fileRef = C65981F31D20CFAB008DDBB5 /* PTAnnotableLine.m */; };
 		C65981F71D20CFB9008DDBB5 /* PTAnnotableRectangular.m in Sources */ = {isa = PBXBuildFile; fileRef = C65981F61D20CFB9008DDBB5 /* PTAnnotableRectangular.m */; };
+		C6615C8A1D225A8E00D993AB /* PTMovebleTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = C6615C891D225A8E00D993AB /* PTMovebleTextView.m */; };
 		C6DEA1121D1B7930007B83C8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C6DEA1111D1B7930007B83C8 /* main.m */; };
 		C6DEA1151D1B7930007B83C8 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C6DEA1141D1B7930007B83C8 /* AppDelegate.m */; };
 		C6DEA1181D1B7930007B83C8 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C6DEA1171D1B7930007B83C8 /* ViewController.m */; };
@@ -314,6 +315,8 @@
 		C65981F31D20CFAB008DDBB5 /* PTAnnotableLine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTAnnotableLine.m; sourceTree = "<group>"; };
 		C65981F51D20CFB9008DDBB5 /* PTAnnotableRectangular.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTAnnotableRectangular.h; sourceTree = "<group>"; };
 		C65981F61D20CFB9008DDBB5 /* PTAnnotableRectangular.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTAnnotableRectangular.m; sourceTree = "<group>"; };
+		C6615C881D225A8E00D993AB /* PTMovebleTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTMovebleTextView.h; sourceTree = "<group>"; };
+		C6615C891D225A8E00D993AB /* PTMovebleTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTMovebleTextView.m; sourceTree = "<group>"; };
 		C6DEA10D1D1B7930007B83C8 /* FilterFrameEditDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FilterFrameEditDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6DEA1111D1B7930007B83C8 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		C6DEA1131D1B7930007B83C8 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -957,6 +960,8 @@
 		C65981F11D20CE81008DDBB5 /* FourControls */ = {
 			isa = PBXGroup;
 			children = (
+				C6615C881D225A8E00D993AB /* PTMovebleTextView.h */,
+				C6615C891D225A8E00D993AB /* PTMovebleTextView.m */,
 				C6DEA4961D1B85DE007B83C8 /* PTRectangle.h */,
 				C6DEA4971D1B85DE007B83C8 /* PTRectangle.m */,
 				C65981F51D20CFB9008DDBB5 /* PTAnnotableRectangular.h */,
@@ -2152,6 +2157,7 @@
 				C6DEA22D1D1B79D9007B83C8 /* README.md in Sources */,
 				C6DEA4431D1B7A39007B83C8 /* GPUImageMultiplyBlendFilter.m in Sources */,
 				C6DEA1121D1B7930007B83C8 /* main.m in Sources */,
+				C6615C8A1D225A8E00D993AB /* PTMovebleTextView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -8,7 +8,7 @@
 
 #import "PTAnnotableCanvasView.h"
 #import "PTArrow.h"
-#import "PTRectangle.h"
+
 #import "UIImage+PTImage.h"
 
 #define kArrowChangeThreshold 32
@@ -38,15 +38,14 @@
         self.backgroundColor = [UIColor clearColor];
         self.layer.borderColor = [UIColor redColor].CGColor;
         self.layer.borderWidth = 2;
-        //        _activeArrow = [[Arrow alloc] initWithFrame:CGRectZero];
-        //        [self addSubview:_activeArrow];
         
     }
     return self;
 }
 
--(void)dropFilterMaskWithSourceImage:(UIImage *)sourceImage initialFrame:(CGRect)initialFrame{
+-(void)dropFilterMaskWithSourceImage:(UIImage *)sourceImage initialFrame:(CGRect)initialFrame type:(PTRectangleType)rectangleType{
     PTRectangle *maskView = [[PTRectangle alloc] initWithFrame:initialFrame];
+    maskView.rectangleType = rectangleType;
     [self addSubview:maskView];
     maskView.clampSize = self.bounds.size;
     maskView.tag = shapeTag;
@@ -55,14 +54,18 @@
         [self deselectEveryShapeExceptSelectedShape:NO];
         for(PTRectangle *maskView in self.shapeGroup){
             if (maskView.tag == index) {
-                maskView.imageView.image = [sourceImage croppIngimageToRect:maskView.frame relativeToImageFrame:self.frame];
+                [maskView setImage:[sourceImage croppIngimageToRect:maskView.frame relativeToImageFrame:self.frame]];
                 [self bringSubviewToFront:maskView];
                 selectedShape = maskView;
                 maskView.selected = YES;
             }
         }
     };
-    
+    maskView.tapFocused = ^(){
+        selectedShape = maskView;
+        
+        [self deselectEveryShapeExceptSelectedShape:YES];
+    };
     [self.shapeGroup safeAddObject:maskView];
     maskView.didUpdateFrame(maskView.tag);
     shapeTag++;
@@ -75,6 +78,12 @@
         }else{
             if (!exceptSelected) {
                 currentShape.selected = NO;
+                if ([currentShape isKindOfClass:[PTRectangle class]]) {
+                    PTRectangle *rectangle = (PTRectangle *)currentShape;
+                    if (rectangle.rectangleType == PTRectangleTypeTextView) {
+                        [rectangle.textView resignFirstResponder];
+                    }
+                }
             }
         }
     }
@@ -93,16 +102,23 @@
 -(void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     
     //[self endDrawingArrow:touches withEvent:event];
-    [self endDrawingRectangle:touches withEvent:event];
+    BOOL drawingSuccess;
+    drawingSuccess = [self endDrawingRectangle:touches withEvent:event];
+    if (!drawingSuccess) {
+        [self deselectEveryShapeExceptSelectedShape:NO];
+    }
 }
 
 -(void)startDrawingRectangle:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     CGPoint touchPoint = [[touches anyObject] locationInView:self];
     startPoint = touchPoint;
-    [self dropFilterMaskWithSourceImage:nil initialFrame:CGRectZero];
+    [self dropFilterMaskWithSourceImage:nil initialFrame:CGRectZero type:PTRectangleTypeTextView];
     PTRectangle *activeRectangle = [self.shapeGroup lastObject];
-    activeRectangle.selected = NO;
-    activeRectangle.rectangleType = PTRectangleTypeOval;
+    activeRectangle.hidden = NO;
+    if (activeRectangle.rectangleType == PTRectangleTypeTextView) {
+        activeRectangle.selected = YES;
+    }
+    
     activeRectangle.frame = CGRectMake(startPoint.x, startPoint.y, 20, 20);
 }
 
@@ -119,18 +135,23 @@
     NSLog(@"%@",NSStringFromCGRect(activeRectangle.frame));
 }
 
--(void)endDrawingRectangle:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+-(BOOL)endDrawingRectangle:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     drawing = NO;
-    PTAnnotableRectangular *activeRectangle = [self.shapeGroup lastObject];
+    PTRectangle *activeRectangle = [self.shapeGroup lastObject];
     if (activeRectangle.width<kCornerTouchThreshold||activeRectangle.height<kCornerTouchThreshold) {
         [activeRectangle removeFromSuperview];
         [self.shapeGroup removeLastObject];
-        return;
+        NSLog(@"Rectangle too small, abort drawing...");
+        return NO;
     }
     activeRectangle.userInteractionEnabled = YES;
     activeRectangle.selected = YES;
     selectedShape = activeRectangle;
-    
+    if (activeRectangle.rectangleType == PTRectangleTypeTextView) {
+        activeRectangle.textView.hidden = NO;
+        [activeRectangle.textView becomeFirstResponder];
+    }
+    return YES;
 }
 
 -(void)startDrawingArrow:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
@@ -232,7 +253,7 @@
     
 }
 
--(void)endDrawingArrow:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+-(BOOL)endDrawingArrow:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     // If user finished editing current arrow, return.
     if (!drawing) {
         
@@ -241,7 +262,7 @@
                 selectedShape.selected = !selectedShape.selected;
             }
         }
-        return;
+        return YES;
     }
     
     // If the new arrow is too short, discard it.
@@ -250,12 +271,13 @@
         [_activeArrow removeFromSuperview];
         [self.shapeGroup removeLastObject];
         NSLog(@"Arrow too short, abort drawing...");
-        return;
+        return NO;
     }
     _activeArrow.selected = YES;
     selectedShape = _activeArrow;
     drawing = NO;
     shapeTag++;
+    return YES;
 }
 
 -(void)deleteSelectedShape{

@@ -10,6 +10,7 @@
 
 @interface PTAnnotableRectangular (){
     CGPoint touchStart;
+    CGPoint touchEnd;
     BOOL isDraggingTopLeft;
     BOOL isDraggingTopRight;
     BOOL isDraggingBottomLeft;
@@ -37,6 +38,7 @@
 }
 
 -(void)updateAllControlPoints{
+    self.controlSurface.frame = CGRectMake(kControlPointRadius/2, kControlPointRadius/2, self.width-kControlPointRadius, self.height-kControlPointRadius);
     self.controlPointTopLeft.center = CGPointMake(self.controlSurface.left, self.controlSurface.top);
     self.controlPointTopRight.center = CGPointMake(self.controlSurface.right, self.controlSurface.top);
     self.controlPointBottomLeft.center = CGPointMake(self.controlSurface.left, self.controlSurface.bottom);
@@ -58,7 +60,7 @@
 
 -(void)layoutSubviews{
     [super layoutSubviews];
-    self.controlSurface.frame = CGRectMake(kControlPointRadius/2, kControlPointRadius/2, self.width-kControlPointRadius, self.height-kControlPointRadius);
+    
     [self updateAllControlPoints];
 }
 
@@ -73,7 +75,7 @@
     isDraggingBottomLeft = NO;
     isDraggingBottomRight = NO;
     isDraggingMySelf = NO;
-    
+    self.isEditing = NO;
     if (distA<kCornerTouchThreshold) {
         isDraggingTopLeft = YES;
     }else if(distB<kCornerTouchThreshold){
@@ -89,7 +91,9 @@
 }
 
 -(void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    self.isEditing = YES;
     CGPoint touchPoint = [[touches anyObject] locationInView:self];
+    touchEnd = touchPoint;
     CGPoint previous = [[touches anyObject] previousLocationInView:self];
     float deltaWidth = touchPoint.x - previous.x;
     float deltaHeight = touchPoint.y - previous.y;
@@ -130,10 +134,15 @@
     }else{
         self.center = CGPointMake(self.center.x+deltaWidth, self.center.y+deltaHeight);
     }
-    NSLog(@"%@",NSStringFromCGRect(self.frame));
-    self.controlSurface.frame = CGRectMake(kControlPointRadius/2, kControlPointRadius/2, self.width-kControlPointRadius, self.height-kControlPointRadius);
+    
     [self updateAllControlPoints];
 }
+
+-(void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    
+}
+
+
 
 -(CGFloat)distanceBetweenPointA:(CGPoint)pointA andPointB:(CGPoint)pointB{
     CGFloat dx = (pointB.x-pointA.x);

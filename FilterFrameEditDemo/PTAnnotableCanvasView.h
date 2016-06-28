@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PTRectangle.h"
 
 @interface PTAnnotableCanvasView : UIView
 -(void)deleteSelectedShape;
--(void)dropFilterMaskWithSourceImage:(UIImage *)sourceImage initialFrame:(CGRect)initialFrame;
+-(void)dropFilterMaskWithSourceImage:(UIImage *)sourceImage initialFrame:(CGRect)initialFrame type:(PTRectangleType)rectangleType;
 @end
